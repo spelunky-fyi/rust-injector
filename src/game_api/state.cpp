@@ -59,14 +59,14 @@ size_t get_insta()
     // TODO
     return 0ul;
 
-    ONCE(size_t)
-    {
-        auto memory = Memory::get();
-        auto off = memory.after_bundle;
-        off = find_inst(memory.exe(), "\x40\x53\x56\x41\x54\x41\x55\x48\x83\xEC\x68"s,
-                        off + 1); // Spel2.exe+21E37920
-        return res = function_start(memory.at_exe(off));
-    }
+    //ONCE(size_t)
+    //{
+    //    auto memory = Memory::get();
+    //    auto off = memory.after_bundle;
+    //    off = find_inst(memory.exe(), "\x40\x53\x56\x41\x54\x41\x55\x48\x83\xEC\x68"s,
+    //                    off + 1); // Spel2.exe+21E37920
+    //    return res = function_start(memory.at_exe(off));
+    //}
 }
 
 size_t get_camera()
