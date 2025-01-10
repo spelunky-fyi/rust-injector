@@ -18,12 +18,14 @@
 #include "items.hpp"              // for Items, SelectPlayerSlot, Items::is...
 #include "level_api.hpp"          // IWYU pragma: keep
 #include "online.hpp"             // for OnlinePlayer, OnlineLobby, Online
+#include "prng.hpp"               // IWYU pragma: keep
+#include "rpc.hpp"                // for get_level_flags, set_level_flags
 #include "savestate.hpp"          // for SaveState
 #include "screen.hpp"             // IWYU pragma: keep
 #include "screen_arena.hpp"       // IWYU pragma: keep
 #include "script/events.hpp"      // for pre_load_state
 #include "script/lua_backend.hpp" // for LuaBackend
-#include "state.hpp"              // for StateMemory, State, StateMemory::a...
+#include "state.hpp"              // for StateMemory, StateMemory::a...
 #include "state_structs.hpp"      // for ArenaConfigArenas, ArenaConfigItems
 
 namespace NState
@@ -532,7 +534,9 @@ void register_usertypes(sol::state& lua)
         "local_player",
         &Online::local_player,
         "lobby",
-        &Online::lobby);
+        &Online::lobby,
+        "is_active",
+        &Online::is_active);
     /// Used in Online
     lua.new_usertype<OnlinePlayer>(
         "OnlinePlayer",
@@ -578,39 +582,29 @@ void register_usertypes(sol::state& lua)
     lua.create_named_table("CAUSE_OF_DEATH", "DEATH", 0, "ENTITY", 1, "LONG_FALL", 2, "STILL_FALLING", 3, "MISSED", 4, "POISONED", 5);
 
     lua["toast_visible"] = []() -> bool
-    {
-        return State::get().ptr()->toast != 0;
-    };
+    { return HeapBase::get().state()->toast != 0; };
 
     lua["speechbubble_visible"] = []() -> bool
-    {
-        return State::get().ptr()->speechbubble != 0;
-    };
+    { return HeapBase::get().state()->speechbubble != 0; };
 
     lua["cancel_toast"] = []()
-    {
-        State::get().ptr()->toast_timer = 1000;
-    };
+    { HeapBase::get().state()->toast_timer = 1000; };
 
     lua["cancel_speechbubble"] = []()
-    {
-        State::get().ptr()->speechbubble_timer = 1000;
-    };
+    { HeapBase::get().state()->speechbubble_timer = 1000; };
 
     /// Save current level state to slot 1..4. These save states are invalid and cleared after you exit the current level, but can be used to rollback to an earlier state in the same level. You probably definitely shouldn't use save state functions during an update, and sync them to the same event outside an update (i.e. GUIFRAME, POST_UPDATE). These slots are already allocated by the game, actually used for online rollback, and use no additional memory. Also see SaveState if you need more.
     lua["save_state"] = [](int slot)
     {
         if (slot >= 1 && slot <= 4)
-        {
-            copy_save_slot(5, slot);
-        }
+            SaveState::backup_main(slot);
     };
 
     /// Load level state from slot 1..4, if a save_state was made in this level.
     lua["load_state"] = [](int slot)
     {
         if (slot >= 1 && slot <= 4 && get_save_state(slot))
-            copy_save_slot(slot, 5);
+            SaveState::restore_main(slot);
     };
 
     /// Clear save state from slot 1..4.
@@ -628,6 +622,53 @@ void register_usertypes(sol::state& lua)
         return nullptr;
     };
 
-    lua.new_usertype<SaveState>("SaveState", sol::constructors<SaveState()>(), "load", &SaveState::load, "save", &SaveState::save, "clear", &SaveState::clear, "get_state", &SaveState::get_state);
+    lua.new_usertype<SaveState>(
+        "SaveState",
+        sol::constructors<SaveState()>(),
+        "load",
+        &SaveState::load,
+        "save",
+        &SaveState::save,
+        "clear",
+        &SaveState::clear,
+        "get_state",
+        &SaveState::get_state,
+        "get_frame",
+        &SaveState::get_frame,
+        "get_prng",
+        &SaveState::get_prng,
+        "get",
+        &SaveState::get);
+
+    /// Get the thread-local version of state
+    lua["get_local_state"] = []() -> StateMemory*
+    { return HeapBase::get().state(); };
+    /// Get the thread-local version of players
+    lua["get_local_players"] = []() -> std::vector<Player*>
+    { return HeapBase::get().state()->get_players(); };
+    /// Warp to a level immediately.
+    lua["warp"] = [](uint8_t world, uint8_t level, uint8_t theme)
+    { HeapBase::get().state()->warp(world, level, theme); };
+    /// Set seed and reset run.
+    lua["set_seed"] = [](uint32_t seed)
+    { HeapBase::get().state()->set_seed(seed); };
+    /// Get `state.level_flags`
+    lua["get_level_flags"] = get_level_flags;
+    /// Set `state.level_flags`
+    lua["set_level_flags"] = set_level_flags;
+    /// Returns how many of a specific entity type Waddler has stored
+    lua["waddler_count_entity"] = waddler_count_entity;
+    /// Store an entity type in Waddler's storage. Returns the slot number the item was stored in or -1 when storage is full and the item couldn't be stored.
+    lua["waddler_store_entity"] = waddler_store_entity;
+    /// Removes an entity type from Waddler's storage. Second param determines how many of the item to remove (default = remove all)
+    lua["waddler_remove_entity"] = waddler_remove_entity;
+    /// Gets the 16-bit meta-value associated with the entity type in the associated slot
+    lua["waddler_get_entity_meta"] = waddler_get_entity_meta;
+    /// Sets the 16-bit meta-value associated with the entity type in the associated slot
+    lua["waddler_set_entity_meta"] = waddler_set_entity_meta;
+    /// Gets the entity type of the item in the provided slot
+    lua["waddler_entity_type_in_slot"] = waddler_entity_type_in_slot;
+    /// Run state update manually, i.e. simulate one logic frame. Use in e.g. POST_UPDATE, but be mindful of infinite loops, this will cause another POST_UPDATE. Can even be called thousands of times to simulate minutes of gameplay in a few seconds.
+    lua["update_state"] = update_state;
 }
 }; // namespace NState

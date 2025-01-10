@@ -185,276 +185,6 @@ function toast(message) end
 ---@param top boolean
 ---@return nil
 function say(entity_uid, message, sound_type, top) end
----Add an integer option that the user can change in the UI. Read with `options.name`, `value` is the default. Keep in mind these are just soft
----limits, you can override them in the UI with double click.
----@param name string
----@param desc string
----@param long_desc string
----@param value integer
----@param min integer
----@param max integer
----@return nil
-function register_option_int(name, desc, long_desc, value, min, max) end
----Add a float option that the user can change in the UI. Read with `options.name`, `value` is the default. Keep in mind these are just soft
----limits, you can override them in the UI with double click.
----@param name string
----@param desc string
----@param long_desc string
----@param value number
----@param min number
----@param max number
----@return nil
-function register_option_float(name, desc, long_desc, value, min, max) end
----Add a boolean option that the user can change in the UI. Read with `options.name`, `value` is the default.
----@param name string
----@param desc string
----@param long_desc string
----@param value boolean
----@return nil
-function register_option_bool(name, desc, long_desc, value) end
----Add a string option that the user can change in the UI. Read with `options.name`, `value` is the default.
----@param name string
----@param desc string
----@param long_desc string
----@param value string
----@return nil
-function register_option_string(name, desc, long_desc, value) end
----Add a combobox option that the user can change in the UI. Read the int index of the selection with `options.name`. Separate `opts` with `\0`,
----with a double `\0\0` at the end. `value` is the default index 1..n.
----@param name string
----@param desc string
----@param long_desc string
----@param opts string
----@param value integer
----@return nil
-function register_option_combo(name, desc, long_desc, opts, value) end
----Add a button that the user can click in the UI. Sets the timestamp of last click on value and runs the callback function.
----@param name string
----@param desc string
----@param long_desc string
----@param on_click function
----@return nil
-function register_option_button(name, desc, long_desc, on_click) end
----Add custom options using the window drawing functions. Everything drawn in the callback will be rendered in the options window and the return value saved to `options[name]` or overwriting the whole `options` table if using and empty name.
----`value` is the default value, and pretty important because anything defined in the callback function will only be defined after the options are rendered. See the example for details.
----The callback signature is optional<any> on_render(GuiDrawContext draw_ctx)
----@param name string
----@param value any
----@param on_render fun(draw_ctx: GuiDrawContext): any?
----@return nil
-function register_option_callback(name, value, on_render) end
----Removes an option by name. To make complicated conditionally visible options you should probably just use register_option_callback though.
----@param name string
----@return nil
-function unregister_option(name) end
----Spawn liquids, always spawns in the front layer, will have fun effects if `entity_type` is not a liquid (only the short version, without velocity etc.).
----Don't overuse this, you are still restricted by the liquid pool sizes and thus might crash the game.
----`liquid_flags` - not much known about, 2 - will probably crash the game, 3 - pause_physics, 6-12 is probably agitation, surface_tension etc. set to 0 to ignore
----`amount` - it will spawn amount x amount (so 1 = 1, 2 = 4, 3 = 6 etc.), `blobs_separation` is optional
----@param entity_type ENT_TYPE
----@param x number
----@param y number
----@return nil
-function spawn_liquid(entity_type, x, y) end
----Spawn liquids, always spawns in the front layer, will have fun effects if `entity_type` is not a liquid (only the short version, without velocity etc.).
----Don't overuse this, you are still restricted by the liquid pool sizes and thus might crash the game.
----`liquid_flags` - not much known about, 2 - will probably crash the game, 3 - pause_physics, 6-12 is probably agitation, surface_tension etc. set to 0 to ignore
----`amount` - it will spawn amount x amount (so 1 = 1, 2 = 4, 3 = 6 etc.), `blobs_separation` is optional
----@param entity_type ENT_TYPE
----@param x number
----@param y number
----@param velocityx number
----@param velocityy number
----@param liquid_flags integer
----@param amount integer
----@param blobs_separation number
----@return nil
-function spawn_liquid(entity_type, x, y, velocityx, velocityy, liquid_flags, amount, blobs_separation) end
----Spawn an entity in position with some velocity and return the uid of spawned entity.
----Uses level coordinates with [LAYER.FRONT](#LAYER) and LAYER.BACK, but player-relative coordinates with LAYER.PLAYER(n), where (n) is a player number (1-4).
----@param entity_type ENT_TYPE
----@param x number
----@param y number
----@param layer LAYER
----@param vx number
----@param vy number
----@return integer
-function spawn_entity(entity_type, x, y, layer, vx, vy) end
----Short for [spawn_entity](https://spelunky-fyi.github.io/overlunky/#spawn_entity).
----@param entity_type ENT_TYPE
----@param x number
----@param y number
----@param layer LAYER
----@param vx number
----@param vy number
----@return integer
-function spawn(entity_type, x, y, layer, vx, vy) end
----Spawns an entity directly on the floor below the tile at the given position.
----Use this to avoid the little fall that some entities do when spawned during level gen callbacks.
----@param entity_type ENT_TYPE
----@param x number
----@param y number
----@param layer LAYER
----@return integer
-function spawn_entity_snapped_to_floor(entity_type, x, y, layer) end
----Short for [spawn_entity_snapped_to_floor](https://spelunky-fyi.github.io/overlunky/#spawn_entity_snapped_to_floor).
----@param entity_type ENT_TYPE
----@param x number
----@param y number
----@param layer LAYER
----@return integer
-function spawn_on_floor(entity_type, x, y, layer) end
----Spawn a grid entity, such as floor or traps, that snaps to the grid.
----@param entity_type ENT_TYPE
----@param x number
----@param y number
----@param layer LAYER
----@return integer
-function spawn_grid_entity(entity_type, x, y, layer) end
----Same as `spawn_entity` but does not trigger any pre-entity-spawn callbacks, so it will not be replaced by another script
----@param entity_type ENT_TYPE
----@param x number
----@param y number
----@param layer LAYER
----@param vx number
----@param vy number
----@return integer
-function spawn_entity_nonreplaceable(entity_type, x, y, layer, vx, vy) end
----Short for [spawn_entity_nonreplaceable](https://spelunky-fyi.github.io/overlunky/#spawn_entity_nonreplaceable).
----@param entity_type ENT_TYPE
----@param x number
----@param y number
----@param layer LAYER
----@param vx number
----@param vy number
----@return integer
-function spawn_critical(entity_type, x, y, layer, vx, vy) end
----Spawn a door to another world, level and theme and return the uid of spawned entity.
----Uses level coordinates with LAYER.FRONT and LAYER.BACK, but player-relative coordinates with LAYER.PLAYERn
----@param x number
----@param y number
----@param layer LAYER
----@param w integer
----@param l integer
----@param t integer
----@return integer
-function spawn_door(x, y, layer, w, l, t) end
----Short for [spawn_door](https://spelunky-fyi.github.io/overlunky/#spawn_door).
----@param x number
----@param y number
----@param layer LAYER
----@param w integer
----@param l integer
----@param t integer
----@return integer
-function door(x, y, layer, w, l, t) end
----Spawn a door to backlayer.
----@param x number
----@param y number
----@return nil
-function spawn_layer_door(x, y) end
----Short for [spawn_layer_door](https://spelunky-fyi.github.io/overlunky/#spawn_layer_door).
----@param x number
----@param y number
----@return nil
-function layer_door(x, y) end
----Spawns apep with the choice if it going left or right, if you want the game to choose use regular spawn functions with `ENT_TYPE.MONS_APEP_HEAD`
----@param x number
----@param y number
----@param layer LAYER
----@param right boolean
----@return integer
-function spawn_apep(x, y, layer, right) end
----Spawns and grows a tree
----@param x number
----@param y number
----@param layer LAYER
----@param height integer
----@return integer
-function spawn_tree(x, y, layer, height) end
----Spawns and grows a tree
----@param x number
----@param y number
----@param layer LAYER
----@return integer
-function spawn_tree(x, y, layer) end
----Spawns and grows mushroom, height relates to the trunk, without it, it will roll the game default 3-5 height
----Regardless, if there is not enough space, it will spawn shorter one or if there is no space even for the smallest one, it will just not spawn at all
----Returns uid of the base or -1 if it wasn't able to spawn
----@param x number
----@param y number
----@param l LAYER
----@param height integer
----@return integer
-function spawn_mushroom(x, y, l, height) end
----Spawns and grows mushroom, height relates to the trunk, without it, it will roll the game default 3-5 height
----Regardless, if there is not enough space, it will spawn shorter one or if there is no space even for the smallest one, it will just not spawn at all
----Returns uid of the base or -1 if it wasn't able to spawn
----@param x number
----@param y number
----@param l LAYER
----@return integer
-function spawn_mushroom(x, y, l) end
----Spawns an already unrolled rope as if created by player
----@param x number
----@param y number
----@param layer LAYER
----@param texture TEXTURE
----@return integer
-function spawn_unrolled_player_rope(x, y, layer, texture) end
----Spawns an already unrolled rope as if created by player
----@param x number
----@param y number
----@param layer LAYER
----@param texture TEXTURE
----@param max_length integer
----@return integer
-function spawn_unrolled_player_rope(x, y, layer, texture, max_length) end
----Spawn a player in given location, if player of that slot already exist it will spawn clone, the game may crash as this is very unexpected situation
----If you want to respawn a player that is a ghost, set in his Inventory `health` to above 0, and `time_of_death` to 0 and call this function, the ghost entity will be removed automatically
----@param player_slot integer
----@param x number?
----@param y number?
----@param layer LAYER?
----@return integer
-function spawn_player(player_slot, x, y, layer) end
----Spawn the PlayerGhost entity, it will not move and not be connected to any player, you can then use [steal_input](https://spelunky-fyi.github.io/overlunky/#steal_input) and send_input to control it
----or change it's `player_inputs` to the `input` of real player so he can control it directly
----@param char_type ENT_TYPE
----@param x number
----@param y number
----@param layer LAYER
----@return integer
-function spawn_playerghost(char_type, x, y, layer) end
----Add a callback for a spawn of specific entity types or mask. Set `mask` to `MASK.ANY` to ignore that.
----This is run before the entity is spawned, spawn your own entity and return its uid to replace the intended spawn.
----In many cases replacing the intended entity won't have the intended effect or will even break the game, so use only if you really know what you're doing.
----The callback signature is optional<int> pre_entity_spawn(ENT_TYPE entity_type, float x, float y, int layer, Entity overlay_entity, SPAWN_TYPE spawn_flags)
----@param cb fun(entity_type: ENT_TYPE, x: number, y: number, layer: integer, overlay_entity: Entity, spawn_flags: SPAWN_TYPE): integer?
----@param flags SPAWN_TYPE
----@param mask integer
----@vararg any
----@return CallbackId
-function set_pre_entity_spawn(cb, flags, mask, ...) end
----Add a callback for a spawn of specific entity types or mask. Set `mask` to `MASK.ANY` to ignore that.
----This is run right after the entity is spawned but before and particular properties are changed, e.g. owner or velocity.
----The callback signature is nil post_entity_spawn(Entity ent, SPAWN_TYPE spawn_flags)
----@param cb fun(ent: Entity, spawn_flags: SPAWN_TYPE): nil
----@param flags SPAWN_TYPE
----@param mask integer
----@vararg any
----@return CallbackId
-function set_post_entity_spawn(cb, flags, mask, ...) end
----Warp to a level immediately.
----@param w integer
----@param l integer
----@param t integer
----@return nil
-function warp(w, l, t) end
----Set seed and reset run.
----@param seed integer
----@return nil
-function set_seed(seed) end
 ---Enable/disable godmode for players.
 ---@param g boolean
 ---@return nil
@@ -470,74 +200,12 @@ function zoom(level) end
 ---Reset the default zoom levels for all areas and sets current zoom level to 13.5.
 ---@return nil
 function zoom_reset() end
----Teleport entity to coordinates with optional velocity
----@param uid integer
----@param x number
----@param y number
----@param vx number
----@param vy number
----@return nil
-function move_entity(uid, x, y, vx, vy) end
----Teleport entity to coordinates with optional velocity
----@param uid integer
----@param x number
----@param y number
----@param vx number
----@param vy number
----@param layer LAYER
----@return nil
-function move_entity(uid, x, y, vx, vy, layer) end
----Teleport grid entity, the destination should be whole number, this ensures that the collisions will work properly
----@param uid integer
----@param x number
----@param y number
----@param layer LAYER
----@return nil
-function move_grid_entity(uid, x, y, layer) end
----Destroy the grid entity (by uid or position), and its item entities, removing them from the grid without dropping particles or gold.
----Will also destroy monsters or items that are standing on a linked activefloor or chain, though excludes MASK.PLAYER to prevent crashes
----@param uid integer
----@return nil
-function destroy_grid(uid) end
----Destroy the grid entity (by uid or position), and its item entities, removing them from the grid without dropping particles or gold.
----Will also destroy monsters or items that are standing on a linked activefloor or chain, though excludes MASK.PLAYER to prevent crashes
----@param x number
----@param y number
----@param layer LAYER
----@return nil
-function destroy_grid(x, y, layer) end
----Make an ENT_TYPE.FLOOR_DOOR_EXIT go to world `w`, level `l`, theme `t`
----@param uid integer
----@param w integer
----@param l integer
----@param t integer
----@return nil
-function set_door_target(uid, w, l, t) end
----Short for [set_door_target](https://spelunky-fyi.github.io/overlunky/#set_door_target).
----@param uid integer
----@param w integer
----@param l integer
----@param t integer
----@return nil
-function set_door(uid, w, l, t) end
----Get door target `world`, `level`, `theme`
----@param uid integer
----@return integer, integer, integer
-function get_door_target(uid) end
 ---Set the contents of [Coffin](https://spelunky-fyi.github.io/overlunky/#Coffin), [Present](https://spelunky-fyi.github.io/overlunky/#Present), [Pot](https://spelunky-fyi.github.io/overlunky/#Pot), [Container](https://spelunky-fyi.github.io/overlunky/#Container)
 ---Check the [entity hierarchy list](https://github.com/spelunky-fyi/overlunky/blob/main/docs/entities-hierarchy.md) for what the exact ENT_TYPE's can this function affect
 ---@param uid integer
 ---@param item_entity_type ENT_TYPE
 ---@return nil
 function set_contents(uid, item_entity_type) end
----Get the Entity behind an uid, converted to the correct type. To see what type you will get, consult the [entity hierarchy list](https://github.com/spelunky-fyi/overlunky/blob/main/docs/entities-hierarchy.md)
----@param uid integer
----@return Entity
-function get_entity(uid) end
----Get the [EntityDB](https://spelunky-fyi.github.io/overlunky/#EntityDB) behind an ENT_TYPE...
----@param id ENT_TYPE
----@return EntityDB
-function get_type(id) end
 ---Gets a grid entity, such as floor or spikes, at the given position and layer.
 ---@param x number
 ---@param y number
@@ -558,14 +226,14 @@ function filter_entities(entities, predicate) end
 ---Get uids of entities by some conditions ([ENT_TYPE](https://spelunky-fyi.github.io/overlunky/#ENT_TYPE), [MASK](https://spelunky-fyi.github.io/overlunky/#MASK)). Set `entity_type` or `mask` to `0` to ignore that, can also use table of entity_types.
 ---Recommended to always set the mask, even if you look for one entity type
 ---@param entity_types ENT_TYPE[]
----@param mask integer
+---@param mask MASK
 ---@param layer LAYER
 ---@return integer[]
 function get_entities_by(entity_types, mask, layer) end
 ---Get uids of entities by some conditions ([ENT_TYPE](https://spelunky-fyi.github.io/overlunky/#ENT_TYPE), [MASK](https://spelunky-fyi.github.io/overlunky/#MASK)). Set `entity_type` or `mask` to `0` to ignore that, can also use table of entity_types.
 ---Recommended to always set the mask, even if you look for one entity type
 ---@param entity_type ENT_TYPE
----@param mask integer
+---@param mask MASK
 ---@param layer LAYER
 ---@return integer[]
 function get_entities_by(entity_type, mask, layer) end
@@ -578,7 +246,7 @@ function get_entities_by_type(...) end
 ---Get uids of matching entities inside some radius ([ENT_TYPE](https://spelunky-fyi.github.io/overlunky/#ENT_TYPE), [MASK](https://spelunky-fyi.github.io/overlunky/#MASK)). Set `entity_type` or `mask` to `0` to ignore that, can also use table of entity_types
 ---Recommended to always set the mask, even if you look for one entity type
 ---@param entity_types ENT_TYPE[]
----@param mask integer
+---@param mask MASK
 ---@param x number
 ---@param y number
 ---@param layer LAYER
@@ -588,7 +256,7 @@ function get_entities_at(entity_types, mask, x, y, layer, radius) end
 ---Get uids of matching entities inside some radius ([ENT_TYPE](https://spelunky-fyi.github.io/overlunky/#ENT_TYPE), [MASK](https://spelunky-fyi.github.io/overlunky/#MASK)). Set `entity_type` or `mask` to `0` to ignore that, can also use table of entity_types
 ---Recommended to always set the mask, even if you look for one entity type
 ---@param entity_type ENT_TYPE
----@param mask integer
+---@param mask MASK
 ---@param x number
 ---@param y number
 ---@param layer LAYER
@@ -597,53 +265,18 @@ function get_entities_at(entity_types, mask, x, y, layer, radius) end
 function get_entities_at(entity_type, mask, x, y, layer, radius) end
 ---Get uids of matching entities overlapping with the given hitbox. Set `entity_type` or `mask` to `0` to ignore that, can also use table of entity_types
 ---@param entity_types ENT_TYPE[]
----@param mask integer
+---@param mask MASK
 ---@param hitbox AABB
 ---@param layer LAYER
 ---@return integer[]
 function get_entities_overlapping_hitbox(entity_types, mask, hitbox, layer) end
 ---Get uids of matching entities overlapping with the given hitbox. Set `entity_type` or `mask` to `0` to ignore that, can also use table of entity_types
 ---@param entity_type ENT_TYPE
----@param mask integer
+---@param mask MASK
 ---@param hitbox AABB
 ---@param layer LAYER
 ---@return integer[]
 function get_entities_overlapping_hitbox(entity_type, mask, hitbox, layer) end
----Attaches `attachee` to `overlay`, similar to setting `get_entity(attachee).overlay = get_entity(overlay)`.
----However this function offsets `attachee` (so you don't have to) and inserts it into `overlay`'s inventory.
----@param overlay_uid integer
----@param attachee_uid integer
----@return nil
-function attach_entity(overlay_uid, attachee_uid) end
----Get the `flags` field from entity by uid
----@param uid integer
----@return integer
-function get_entity_flags(uid) end
----Set the `flags` field from entity by uid
----@param uid integer
----@param flags integer
----@return nil
-function set_entity_flags(uid, flags) end
----Get the `more_flags` field from entity by uid
----@param uid integer
----@return integer
-function get_entity_flags2(uid) end
----Set the `more_flags` field from entity by uid
----@param uid integer
----@param flags integer
----@return nil
-function set_entity_flags2(uid, flags) end
----Get `state.level_flags`
----@return integer
-function get_level_flags() end
----Set `state.level_flags`
----@param flags integer
----@return nil
-function set_level_flags(flags) end
----Get the ENT_TYPE... of the entity by uid
----@param uid integer
----@return ENT_TYPE
-function get_entity_type(uid) end
 ---Get the current set zoom level
 ---@return number
 function get_zoom_level() end
@@ -661,110 +294,7 @@ function screen_position(x, y) end
 ---@param x number
 ---@return number
 function screen_distance(x) end
----Get position `x, y, layer` of entity by uid. Use this, don't use `Entity.x/y` because those are sometimes just the offset to the entity
----you're standing on, not real level coordinates.
----@param uid integer
----@return number, number, integer
-function get_position(uid) end
----Get interpolated render position `x, y, layer` of entity by uid. This gives smooth hitboxes for 144Hz master race etc...
----@param uid integer
----@return number, number, integer
-function get_render_position(uid) end
----Get velocity `vx, vy` of an entity by uid. Use this to get velocity relative to the game world, (the `Entity.velocityx/velocityy` are relative to `Entity.overlay`). Only works for movable or liquid entities
----@param uid integer
----@return number, number
-function get_velocity(uid) end
----Remove item by uid from entity. `check_autokill` defaults to true, checks if entity should be killed when missing overlay and kills it if so (can help with avoiding crashes)
----@param uid integer
----@param item_uid integer
----@param check_autokill boolean?
----@return nil
-function entity_remove_item(uid, item_uid, check_autokill) end
----Spawns and attaches ball and chain to `uid`, the initial position of the ball is at the entity position plus `off_x`, `off_y`
----@param uid integer
----@param off_x number
----@param off_y number
----@return integer
-function attach_ball_and_chain(uid, off_x, off_y) end
----Spawn an entity of `entity_type` attached to some other entity `over_uid`, in offset `x`, `y`
----@param entity_type ENT_TYPE
----@param over_uid integer
----@param x number
----@param y number
----@return integer
-function spawn_entity_over(entity_type, over_uid, x, y) end
----Short for [spawn_entity_over](https://spelunky-fyi.github.io/overlunky/#spawn_entity_over)
----@param entity_type ENT_TYPE
----@param over_uid integer
----@param x number
----@param y number
----@return integer
-function spawn_over(entity_type, over_uid, x, y) end
----Check if the entity `uid` has some specific `item_uid` by uid in their inventory
----@param uid integer
----@param item_uid integer
----@return boolean
-function entity_has_item_uid(uid, item_uid) end
----Check if the entity `uid` has some ENT_TYPE `entity_type` in their inventory, can also use table of entity_types
----@param uid integer
----@param entity_types ENT_TYPE[]
----@return boolean
-function entity_has_item_type(uid, entity_types) end
----Check if the entity `uid` has some ENT_TYPE `entity_type` in their inventory, can also use table of entity_types
----@param uid integer
----@param entity_type ENT_TYPE
----@return boolean
-function entity_has_item_type(uid, entity_type) end
----Gets uids of entities attached to given entity uid. Use `entity_type` and `mask` ([MASK](https://spelunky-fyi.github.io/overlunky/#MASK)) to filter, set them to 0 to return all attached entities.
----@param uid integer
----@param entity_types ENT_TYPE[]
----@param mask integer
----@return integer[]
-function entity_get_items_by(uid, entity_types, mask) end
----Gets uids of entities attached to given entity uid. Use `entity_type` and `mask` ([MASK](https://spelunky-fyi.github.io/overlunky/#MASK)) to filter, set them to 0 to return all attached entities.
----@param uid integer
----@param entity_type ENT_TYPE
----@param mask integer
----@return integer[]
-function entity_get_items_by(uid, entity_type, mask) end
----Kills an entity by uid. `destroy_corpse` defaults to `true`, if you are killing for example a caveman and want the corpse to stay make sure to pass `false`.
----@param uid integer
----@param destroy_corpse boolean?
----@return nil
-function kill_entity(uid, destroy_corpse) end
----Pick up another entity by uid. Make sure you're not already holding something, or weird stuff will happen.
----@param who_uid integer
----@param what_uid integer
----@return nil
-function pick_up(who_uid, what_uid) end
----Drop held entity, `what_uid` optional, if set, it will check if entity is holding that entity first before dropping it
----@param who_uid integer
----@param what_uid integer?
----@return nil
-function drop(who_uid, what_uid) end
----Unequips the currently worn backitem
----@param who_uid integer
----@return nil
-function unequip_backitem(who_uid) end
----Returns the uid of the currently worn backitem, or -1 if wearing nothing
----@param who_uid integer
----@return integer
-function worn_backitem(who_uid) end
----Apply changes made in [get_type](https://spelunky-fyi.github.io/overlunky/#get_type)() to entity instance by uid.
----@param uid integer
----@return nil
-function apply_entity_db(uid) end
----Try to lock the exit at coordinates
----@param x number
----@param y number
----@return nil
-function lock_door_at(x, y) end
----Try to unlock the exit at coordinates
----@param x number
----@param y number
----@return nil
-function unlock_door_at(x, y) end
----Get the current frame count since the game was started. You can use this to make some timers yourself, the engine runs at 60fps. This counter is paused if you block PRE_UPDATE from running, and also doesn't increment during some loading screens, even though state update still runs.
+---Get the current frame count since the game was started*. You can use this to make some timers yourself, the engine runs at 60fps. This counter is paused if the pause is set with flags PAUSE.FADE or PAUSE.ANKH.
 ---@return integer
 function get_frame() end
 ---Get the current global frame count since the game was started. You can use this to make some timers yourself, the engine runs at 60fps. This counter keeps incrementing when state is updated, even during loading screens.
@@ -773,11 +303,6 @@ function get_global_frame() end
 ---Get the current timestamp in milliseconds since the Unix Epoch.
 ---@return nil
 function get_ms() end
----Make `mount_uid` carry `rider_uid` on their back. Only use this with actual mounts and living things.
----@param mount_uid integer
----@param rider_uid integer
----@return nil
-function carry(mount_uid, rider_uid) end
 ---Sets the amount of blood drops in the Kapala needed to trigger a health increase (default = 7).
 ---@param threshold integer
 ---@return nil
@@ -804,10 +329,6 @@ function activate_sparktraps_hack(activate) end
 ---@param layer LAYER
 ---@return nil
 function set_storage_layer(layer) end
----Flip entity around by uid. All new entities face right by default.
----@param uid integer
----@return nil
-function flip_entity(uid) end
 ---Sets the Y-level at which Olmec changes phases
 ---@param phase integer
 ---@param y number
@@ -862,44 +383,6 @@ function is_inside_active_shop_room(x, y, layer) end
 ---@param layer LAYER
 ---@return boolean
 function is_inside_shop_zone(x, y, layer) end
----Returns how many of a specific entity type Waddler has stored
----@param entity_type ENT_TYPE
----@return integer
-function waddler_count_entity(entity_type) end
----Store an entity type in Waddler's storage. Returns the slot number the item was stored in or -1 when storage is full and the item couldn't be stored.
----@param entity_type ENT_TYPE
----@return integer
-function waddler_store_entity(entity_type) end
----Removes an entity type from Waddler's storage. Second param determines how many of the item to remove (default = remove all)
----@param entity_type ENT_TYPE
----@param amount_to_remove integer
----@return nil
-function waddler_remove_entity(entity_type, amount_to_remove) end
----Gets the 16-bit meta-value associated with the entity type in the associated slot
----@param slot integer
----@return integer
-function waddler_get_entity_meta(slot) end
----Sets the 16-bit meta-value associated with the entity type in the associated slot
----@param slot integer
----@param meta integer
----@return nil
-function waddler_set_entity_meta(slot, meta) end
----Gets the entity type of the item in the provided slot
----@param slot integer
----@return integer
-function waddler_entity_type_in_slot(slot) end
----Spawn a companion (hired hand, player character, eggplant child)
----@param companion_type ENT_TYPE
----@param x number
----@param y number
----@param layer LAYER
----@return integer
-function spawn_companion(companion_type, x, y, layer) end
----Calculate the tile distance of two entities by uid
----@param uid_a integer
----@param uid_b integer
----@return number
-function distance(uid_a, uid_b) end
 ---Basically gets the absolute coordinates of the area inside the unbreakable bedrock walls, from wall to wall. Every solid entity should be
 ---inside these boundaries. The order is: left x, top y, right x, bottom y
 ---@return number, number, number, number
@@ -1014,12 +497,6 @@ function change_string(id, str) end
 ---@param str string
 ---@return STRINGID
 function add_string(str) end
----Get localized name of an entity from the journal, pass `fallback_strategy` as `true` to fall back to the `ENT_TYPE.*` enum name
----if the entity has no localized name
----@param type ENT_TYPE
----@param fallback_strategy boolean?
----@return string
-function get_entity_name(type, fallback_strategy) end
 ---Adds custom name to the item by uid used in the shops
 ---This is better alternative to `add_string` but instead of changing the name for entity type, it changes it for this particular entity
 ---@param uid integer
@@ -1030,11 +507,6 @@ function add_custom_name(uid, name) end
 ---@param uid integer
 ---@return nil
 function clear_custom_name(uid) end
----Calls the enter door function, position doesn't matter, can also enter closed doors (like COG, EW) without unlocking them
----@param player_uid integer
----@param door_uid integer
----@return nil
-function enter_door(player_uid, door_uid) end
 ---Change ENT_TYPE's spawned by `FLOOR_SUNCHALLENGE_GENERATOR`, by default there are 4:
 ---{MONS_WITCHDOCTOR, MONS_VAMPIRE, MONS_SORCERESS, MONS_NECROMANCER}
 ---Use empty table as argument to reset to the game default
@@ -1065,10 +537,6 @@ function change_altar_damage_spawns(ent_types) end
 ---@param ent_types ENT_TYPE[]
 ---@return nil
 function change_waddler_drop(ent_types) end
----Poisons entity, to cure poison set [Movable](https://spelunky-fyi.github.io/overlunky/#Movable).`poison_tick_timer` to -1
----@param entity_uid integer
----@return nil
-function poison_entity(entity_uid) end
 ---Change how much health the ankh gives you after death, with every beat (the heart beat effect) it will add `beat_add_health` to your health,
 ---`beat_add_health` has to be divisor of `health` and can't be 0, otherwise the function does nothing. Set `health` to 0 to return to the game defaults
 ---If you set `health` above the game max health it will be forced down to the game max
@@ -1109,7 +577,7 @@ function create_illumination(color, size, x, y) end
 ---@param uid integer
 ---@return Illumination
 function create_illumination(color, size, uid) end
----Refreshes an Illumination, keeps it from fading out (updates the timer, keeping it in sync with the game render)
+---Refreshes an Illumination, keeps it from fading out, short for `illumination.timer = get_frame()`
 ---@param illumination Illumination
 ---@return nil
 function refresh_illumination(illumination) end
@@ -1145,21 +613,6 @@ function set_setting(setting, value) end
 ---Short for print(string.format(...))
 ---@return nil
 function printf() end
----Spawn a Shopkeeper in the coordinates and make the room their shop. Returns the Shopkeeper uid. Also see [spawn_roomowner](https://spelunky-fyi.github.io/overlunky/#spawn_roomowner).
----@param x number
----@param y number
----@param layer LAYER
----@param room_template ROOM_TEMPLATE
----@return integer
-function spawn_shopkeeper(x, y, layer, room_template) end
----Spawn a RoomOwner (or a few other like [CavemanShopkeeper](https://spelunky-fyi.github.io/overlunky/#CavemanShopkeeper)) in the coordinates and make them own the room, optionally changing the room template. Returns the RoomOwner uid.
----@param owner_type ENT_TYPE
----@param x number
----@param y number
----@param layer LAYER
----@param room_template ROOM_TEMPLATE
----@return integer
-function spawn_roomowner(owner_type, x, y, layer, room_template) end
 ---Get the current adventure seed pair, or optionally what it was at the start of this run, because it changes every level.
 ---@param run_start boolean?
 ---@return integer, integer
@@ -1225,12 +678,6 @@ function set_level_string(str) end
 ---@param type ENT_TYPE
 ---@return nil
 function set_ending_unlock(type) end
----Get the thread-local version of state
----@return StateMemory
-function get_local_state() end
----Get the thread-local version of players
----@return Player[]
-function get_local_players() end
 ---List files in directory relative to the script root. Returns table of file/directory names or nil if not found.
 ---@param dir string?
 ---@return nil
@@ -1277,9 +724,6 @@ function activate_hundun_hack(activate) end
 ---@param enable boolean
 ---@return nil
 function set_boss_door_control_enabled(enable) end
----Run state update manually, i.e. simulate one logic frame. Use in e.g. POST_UPDATE, but be mindful of infinite loops, this will cause another POST_UPDATE. Can even be called thousands of times to simulate minutes of gameplay in a few seconds.
----@return nil
-function update_state() end
 ---Set engine target frametime (1/framerate, default 1/60). Always capped by your GPU max FPS / VSync. To run the engine faster than rendered FPS, try update_state. Set to 0 to go as fast as possible. Call without arguments to reset. Also see set_speedhack
 ---@param frametime double?
 ---@return nil
@@ -1438,6 +882,58 @@ function clear_state(slot) end
 ---@param slot integer
 ---@return StateMemory
 function get_save_state(slot) end
+---Get the thread-local version of state
+---@return StateMemory
+function get_local_state() end
+---Get the thread-local version of players
+---@return Player[]
+function get_local_players() end
+---Warp to a level immediately.
+---@param world integer
+---@param level integer
+---@param theme integer
+---@return nil
+function warp(world, level, theme) end
+---Set seed and reset run.
+---@param seed integer
+---@return nil
+function set_seed(seed) end
+---Get `state.level_flags`
+---@return integer
+function get_level_flags() end
+---Set `state.level_flags`
+---@param flags integer
+---@return nil
+function set_level_flags(flags) end
+---Returns how many of a specific entity type Waddler has stored
+---@param entity_type ENT_TYPE
+---@return integer
+function waddler_count_entity(entity_type) end
+---Store an entity type in Waddler's storage. Returns the slot number the item was stored in or -1 when storage is full and the item couldn't be stored.
+---@param entity_type ENT_TYPE
+---@return integer
+function waddler_store_entity(entity_type) end
+---Removes an entity type from Waddler's storage. Second param determines how many of the item to remove (default = remove all)
+---@param entity_type ENT_TYPE
+---@param amount_to_remove integer
+---@return nil
+function waddler_remove_entity(entity_type, amount_to_remove) end
+---Gets the 16-bit meta-value associated with the entity type in the associated slot
+---@param slot integer
+---@return integer
+function waddler_get_entity_meta(slot) end
+---Sets the 16-bit meta-value associated with the entity type in the associated slot
+---@param slot integer
+---@param meta integer
+---@return nil
+function waddler_set_entity_meta(slot, meta) end
+---Gets the entity type of the item in the provided slot
+---@param slot integer
+---@return integer
+function waddler_entity_type_in_slot(slot) end
+---Run state update manually, i.e. simulate one logic frame. Use in e.g. POST_UPDATE, but be mindful of infinite loops, this will cause another POST_UPDATE. Can even be called thousands of times to simulate minutes of gameplay in a few seconds.
+---@return nil
+function update_state() end
 ---Returns RawInput, a game structure for raw keyboard and controller state
 ---@return RawInput
 function get_raw_input() end
@@ -1448,6 +944,172 @@ function seed_prng(seed) end
 ---Get the thread-local version of prng
 ---@return PRNG
 function get_local_prng() end
+---Get the Entity behind an uid, converted to the correct type. To see what type you will get, consult the [entity hierarchy list](https://github.com/spelunky-fyi/overlunky/blob/main/docs/entities-hierarchy.md)
+---@param uid integer
+---@return Entity
+function get_entity(uid) end
+---Get the [EntityDB](https://spelunky-fyi.github.io/overlunky/#EntityDB) behind an ENT_TYPE...
+---@param id ENT_TYPE
+---@return EntityDB
+function get_type(id) end
+---Get the ENT_TYPE... of the entity by uid
+---@param uid integer
+---@return ENT_TYPE
+function get_entity_type(uid) end
+---Get localized name of an entity from the journal, pass `fallback_strategy` as `true` to fall back to the `ENT_TYPE.*` enum name
+---if the entity has no localized name
+---@param type ENT_TYPE
+---@param fallback_strategy boolean?
+---@return string
+function get_entity_name(type, fallback_strategy) end
+---Teleport entity to coordinates with optional velocity
+---@param uid integer
+---@param x number
+---@param y number
+---@param vx number
+---@param vy number
+---@return nil
+function move_entity(uid, x, y, vx, vy) end
+---Teleport entity to coordinates with optional velocity
+---@param uid integer
+---@param x number
+---@param y number
+---@param vx number
+---@param vy number
+---@param layer LAYER
+---@return nil
+function move_entity(uid, x, y, vx, vy, layer) end
+---Teleport grid entity, the destination should be whole number, this ensures that the collisions will work properly
+---@param uid integer
+---@param x number
+---@param y number
+---@param layer LAYER
+---@return nil
+function move_grid_entity(uid, x, y, layer) end
+---Destroy the grid entity (by uid or position), and its item entities, removing them from the grid without dropping particles or gold.
+---Will also destroy monsters or items that are standing on a linked activefloor or chain, though excludes MASK.PLAYER to prevent crashes
+---@param uid integer
+---@return nil
+function destroy_grid(uid) end
+---Destroy the grid entity (by uid or position), and its item entities, removing them from the grid without dropping particles or gold.
+---Will also destroy monsters or items that are standing on a linked activefloor or chain, though excludes MASK.PLAYER to prevent crashes
+---@param x number
+---@param y number
+---@param layer LAYER
+---@return nil
+function destroy_grid(x, y, layer) end
+---Attaches `attachee` to `overlay`, similar to setting `get_entity(attachee).overlay = get_entity(overlay)`.
+---However this function offsets `attachee` (so you don't have to) and inserts it into `overlay`'s inventory.
+---@param overlay_uid integer
+---@param attachee_uid integer
+---@return nil
+function attach_entity(overlay_uid, attachee_uid) end
+---Get the `flags` field from entity by uid
+---@param uid integer
+---@return integer
+function get_entity_flags(uid) end
+---Set the `flags` field from entity by uid
+---@param uid integer
+---@param flags integer
+---@return nil
+function set_entity_flags(uid, flags) end
+---Get the `more_flags` field from entity by uid
+---@param uid integer
+---@return integer
+function get_entity_flags2(uid) end
+---Set the `more_flags` field from entity by uid
+---@param uid integer
+---@param flags integer
+---@return nil
+function set_entity_flags2(uid, flags) end
+---Get position `x, y, layer` of entity by uid. Use this, don't use `Entity.x/y` because those are sometimes just the offset to the entity
+---you're standing on, not real level coordinates.
+---@param uid integer
+---@return number, number, integer
+function get_position(uid) end
+---Get interpolated render position `x, y, layer` of entity by uid. This gives smooth hitboxes for 144Hz master race etc...
+---@param uid integer
+---@return number, number, integer
+function get_render_position(uid) end
+---Get velocity `vx, vy` of an entity by uid. Use this to get velocity relative to the game world, (the `Entity.velocityx/velocityy` are relative to `Entity.overlay`). Only works for movable or liquid entities
+---@param uid integer
+---@return number, number
+function get_velocity(uid) end
+---Remove item by uid from entity. `check_autokill` defaults to true, checks if entity should be killed when missing overlay and kills it if so (can help with avoiding crashes)
+---@param uid integer
+---@param item_uid integer
+---@param check_autokill boolean?
+---@return nil
+function entity_remove_item(uid, item_uid, check_autokill) end
+---Spawns and attaches ball and chain to `uid`, the initial position of the ball is at the entity position plus `off_x`, `off_y`
+---@param uid integer
+---@param off_x number
+---@param off_y number
+---@return integer
+function attach_ball_and_chain(uid, off_x, off_y) end
+---Check if the entity `uid` has some specific `item_uid` by uid in their inventory
+---@param uid integer
+---@param item_uid integer
+---@return boolean
+function entity_has_item_uid(uid, item_uid) end
+---Check if the entity `uid` has some ENT_TYPE `entity_type` in their inventory, can also use table of entity_types
+---@param uid integer
+---@param entity_types ENT_TYPE[]
+---@return boolean
+function entity_has_item_type(uid, entity_types) end
+---Check if the entity `uid` has some ENT_TYPE `entity_type` in their inventory, can also use table of entity_types
+---@param uid integer
+---@param entity_type ENT_TYPE
+---@return boolean
+function entity_has_item_type(uid, entity_type) end
+---Gets uids of entities attached to given entity uid. Use `entity_type` and `mask` ([MASK](https://spelunky-fyi.github.io/overlunky/#MASK)) to filter, set them to 0 to return all attached entities.
+---@param uid integer
+---@param entity_types ENT_TYPE[]
+---@param mask MASK
+---@return integer[]
+function entity_get_items_by(uid, entity_types, mask) end
+---Gets uids of entities attached to given entity uid. Use `entity_type` and `mask` ([MASK](https://spelunky-fyi.github.io/overlunky/#MASK)) to filter, set them to 0 to return all attached entities.
+---@param uid integer
+---@param entity_type ENT_TYPE
+---@param mask MASK
+---@return integer[]
+function entity_get_items_by(uid, entity_type, mask) end
+---Kills an entity by uid. `destroy_corpse` defaults to `true`, if you are killing for example a caveman and want the corpse to stay make sure to pass `false`.
+---@param uid integer
+---@param destroy_corpse boolean?
+---@return nil
+function kill_entity(uid, destroy_corpse) end
+---Pick up another entity by uid. Make sure you're not already holding something, or weird stuff will happen.
+---@param who_uid integer
+---@param what_uid integer
+---@return nil
+function pick_up(who_uid, what_uid) end
+---Drop held entity, `what_uid` optional, if set, it will check if entity is holding that entity first before dropping it
+---@param who_uid integer
+---@param what_uid integer?
+---@return nil
+function drop(who_uid, what_uid) end
+---Unequips the currently worn backitem
+---@param who_uid integer
+---@return nil
+function unequip_backitem(who_uid) end
+---Returns the uid of the currently worn backitem, or -1 if wearing nothing
+---@param who_uid integer
+---@return integer
+function worn_backitem(who_uid) end
+---Apply changes made in [get_type](https://spelunky-fyi.github.io/overlunky/#get_type)() to entity instance by uid.
+---@param uid integer
+---@return nil
+function apply_entity_db(uid) end
+---Calculate the tile distance of two entities by uid
+---@param uid_a integer
+---@param uid_b integer
+---@return number
+function distance(uid_a, uid_b) end
+---Poisons entity, to cure poison set [Movable](https://spelunky-fyi.github.io/overlunky/#Movable).`poison_tick_timer` to -1
+---@param entity_uid integer
+---@return nil
+function poison_entity(entity_uid) end
 ---Same as `Player.get_name`
 ---@param type_id ENT_TYPE
 ---@return string
@@ -1469,6 +1131,44 @@ function is_character_female(type_id) end
 ---@param color Color
 ---@return nil
 function set_character_heart_color(type_id, color) end
+---Make an ENT_TYPE.FLOOR_DOOR_EXIT go to world `w`, level `l`, theme `t`
+---@param uid integer
+---@param w integer
+---@param l integer
+---@param t integer
+---@return nil
+function set_door_target(uid, w, l, t) end
+---Short for [set_door_target](https://spelunky-fyi.github.io/overlunky/#set_door_target).
+---@param uid integer
+---@param w integer
+---@param l integer
+---@param t integer
+---@return nil
+function set_door(uid, w, l, t) end
+---Get door target `world`, `level`, `theme`
+---@param uid integer
+---@return integer, integer, integer
+function get_door_target(uid) end
+---Try to lock the exit at coordinates
+---@param x number
+---@param y number
+---@return nil
+function lock_door_at(x, y) end
+---Try to unlock the exit at coordinates
+---@param x number
+---@param y number
+---@return nil
+function unlock_door_at(x, y) end
+---Calls the enter door function, position doesn't matter, can also enter closed doors (like COG, EW) without unlocking them
+---@param player_uid integer
+---@param door_uid integer
+---@return nil
+function enter_door(player_uid, door_uid) end
+---Make `mount_uid` carry `rider_uid` on their back. Only use this with actual mounts and living things.
+---@param mount_uid integer
+---@param rider_uid integer
+---@return nil
+function carry(mount_uid, rider_uid) end
 ---Make a `CustomMovableBehavior`, if `base_behavior` is `nil` you will have to set all of the
 ---behavior functions. If a behavior with `behavior_name` already exists for your script it will
 ---be returned instead.
@@ -1941,11 +1641,305 @@ function rgba(r, g, b, a) end
 ---@param alpha integer?
 ---@return uColor
 function get_color(color_name, alpha) end
+---Spawn liquids, always spawns in the front layer, will have fun effects if `entity_type` is not a liquid (only the short version, without velocity etc.).
+---Don't overuse this, you are still restricted by the liquid pool sizes and thus might crash the game.
+---`liquid_flags` - not much known about, 2 - will probably crash the game, 3 - pause_physics, 6-12 is probably agitation, surface_tension etc. set to 0 to ignore
+---`amount` - it will spawn amount x amount (so 1 = 1, 2 = 4, 3 = 6 etc.), `blobs_separation` is optional
+---@param entity_type ENT_TYPE
+---@param x number
+---@param y number
+---@return nil
+function spawn_liquid(entity_type, x, y) end
+---Spawn liquids, always spawns in the front layer, will have fun effects if `entity_type` is not a liquid (only the short version, without velocity etc.).
+---Don't overuse this, you are still restricted by the liquid pool sizes and thus might crash the game.
+---`liquid_flags` - not much known about, 2 - will probably crash the game, 3 - pause_physics, 6-12 is probably agitation, surface_tension etc. set to 0 to ignore
+---`amount` - it will spawn amount x amount (so 1 = 1, 2 = 4, 3 = 6 etc.), `blobs_separation` is optional
+---@param entity_type ENT_TYPE
+---@param x number
+---@param y number
+---@param velocityx number
+---@param velocityy number
+---@param liquid_flags integer
+---@param amount integer
+---@param blobs_separation number
+---@return nil
+function spawn_liquid(entity_type, x, y, velocityx, velocityy, liquid_flags, amount, blobs_separation) end
+---Spawn an entity in position with some velocity and return the uid of spawned entity.
+---Uses level coordinates with [LAYER.FRONT](#LAYER) and LAYER.BACK, but player-relative coordinates with LAYER.PLAYER(n), where (n) is a player number (1-4).
+---@param entity_type ENT_TYPE
+---@param x number
+---@param y number
+---@param layer LAYER
+---@param vx number
+---@param vy number
+---@return integer
+function spawn_entity(entity_type, x, y, layer, vx, vy) end
+---Short for [spawn_entity](https://spelunky-fyi.github.io/overlunky/#spawn_entity).
+---@param entity_type ENT_TYPE
+---@param x number
+---@param y number
+---@param layer LAYER
+---@param vx number
+---@param vy number
+---@return integer
+function spawn(entity_type, x, y, layer, vx, vy) end
+---Spawns an entity directly on the floor below the tile at the given position.
+---Use this to avoid the little fall that some entities do when spawned during level gen callbacks.
+---@param entity_type ENT_TYPE
+---@param x number
+---@param y number
+---@param layer LAYER
+---@return integer
+function spawn_entity_snapped_to_floor(entity_type, x, y, layer) end
+---Short for [spawn_entity_snapped_to_floor](https://spelunky-fyi.github.io/overlunky/#spawn_entity_snapped_to_floor).
+---@param entity_type ENT_TYPE
+---@param x number
+---@param y number
+---@param layer LAYER
+---@return integer
+function spawn_on_floor(entity_type, x, y, layer) end
+---Spawn a grid entity, such as floor or traps, that snaps to the grid.
+---@param entity_type ENT_TYPE
+---@param x number
+---@param y number
+---@param layer LAYER
+---@return integer
+function spawn_grid_entity(entity_type, x, y, layer) end
+---Same as `spawn_entity` but does not trigger any pre-entity-spawn callbacks, so it will not be replaced by another script
+---@param entity_type ENT_TYPE
+---@param x number
+---@param y number
+---@param layer LAYER
+---@param vx number
+---@param vy number
+---@return integer
+function spawn_entity_nonreplaceable(entity_type, x, y, layer, vx, vy) end
+---Short for [spawn_entity_nonreplaceable](https://spelunky-fyi.github.io/overlunky/#spawn_entity_nonreplaceable).
+---@param entity_type ENT_TYPE
+---@param x number
+---@param y number
+---@param layer LAYER
+---@param vx number
+---@param vy number
+---@return integer
+function spawn_critical(entity_type, x, y, layer, vx, vy) end
+---Spawn a door to another world, level and theme and return the uid of spawned entity.
+---Uses level coordinates with LAYER.FRONT and LAYER.BACK, but player-relative coordinates with LAYER.PLAYERn
+---@param x number
+---@param y number
+---@param layer LAYER
+---@param w integer
+---@param l integer
+---@param t integer
+---@return integer
+function spawn_door(x, y, layer, w, l, t) end
+---Short for [spawn_door](https://spelunky-fyi.github.io/overlunky/#spawn_door).
+---@param x number
+---@param y number
+---@param layer LAYER
+---@param w integer
+---@param l integer
+---@param t integer
+---@return integer
+function door(x, y, layer, w, l, t) end
+---Spawn a door to backlayer.
+---@param x number
+---@param y number
+---@return nil
+function spawn_layer_door(x, y) end
+---Short for [spawn_layer_door](https://spelunky-fyi.github.io/overlunky/#spawn_layer_door).
+---@param x number
+---@param y number
+---@return nil
+function layer_door(x, y) end
+---Spawns apep with the choice if it going left or right, if you want the game to choose use regular spawn functions with `ENT_TYPE.MONS_APEP_HEAD`
+---@param x number
+---@param y number
+---@param layer LAYER
+---@param right boolean
+---@return integer
+function spawn_apep(x, y, layer, right) end
+---Spawns and grows a tree
+---@param x number
+---@param y number
+---@param layer LAYER
+---@param height integer
+---@return integer
+function spawn_tree(x, y, layer, height) end
+---Spawns and grows a tree
+---@param x number
+---@param y number
+---@param layer LAYER
+---@return integer
+function spawn_tree(x, y, layer) end
+---Spawns and grows mushroom, height relates to the trunk, without it, it will roll the game default 3-5 height
+---Regardless, if there is not enough space, it will spawn shorter one or if there is no space even for the smallest one, it will just not spawn at all
+---Returns uid of the base or -1 if it wasn't able to spawn
+---@param x number
+---@param y number
+---@param l LAYER
+---@param height integer
+---@return integer
+function spawn_mushroom(x, y, l, height) end
+---Spawns and grows mushroom, height relates to the trunk, without it, it will roll the game default 3-5 height
+---Regardless, if there is not enough space, it will spawn shorter one or if there is no space even for the smallest one, it will just not spawn at all
+---Returns uid of the base or -1 if it wasn't able to spawn
+---@param x number
+---@param y number
+---@param l LAYER
+---@return integer
+function spawn_mushroom(x, y, l) end
+---Spawns an already unrolled rope as if created by player
+---@param x number
+---@param y number
+---@param layer LAYER
+---@param texture TEXTURE
+---@return integer
+function spawn_unrolled_player_rope(x, y, layer, texture) end
+---Spawns an already unrolled rope as if created by player
+---@param x number
+---@param y number
+---@param layer LAYER
+---@param texture TEXTURE
+---@param max_length integer
+---@return integer
+function spawn_unrolled_player_rope(x, y, layer, texture, max_length) end
+---Spawn a player in given location, if player of that slot already exist it will spawn clone, the game may crash as this is very unexpected situation
+---If you want to respawn a player that is a ghost, set in his Inventory `health` to above 0, and `time_of_death` to 0 and call this function, the ghost entity will be removed automatically
+---@param player_slot integer
+---@param x number?
+---@param y number?
+---@param layer LAYER?
+---@return integer
+function spawn_player(player_slot, x, y, layer) end
+---Spawn the PlayerGhost entity, it will not move and not be connected to any player, you can then use [steal_input](https://spelunky-fyi.github.io/overlunky/#steal_input) and send_input to control it
+---or change it's `player_inputs` to the `input` of real player so he can control it directly
+---@param char_type ENT_TYPE
+---@param x number
+---@param y number
+---@param layer LAYER
+---@return integer
+function spawn_playerghost(char_type, x, y, layer) end
+---Add a callback for a spawn of specific entity types or mask. Set `mask` to `MASK.ANY` to ignore that.
+---This is run before the entity is spawned, spawn your own entity and return its uid to replace the intended spawn.
+---In many cases replacing the intended entity won't have the intended effect or will even break the game, so use only if you really know what you're doing.
+---The callback signature is optional<int> pre_entity_spawn(ENT_TYPE entity_type, float x, float y, int layer, Entity overlay_entity, SPAWN_TYPE spawn_flags)
+---@param cb fun(entity_type: ENT_TYPE, x: number, y: number, layer: integer, overlay_entity: Entity, spawn_flags: SPAWN_TYPE): integer?
+---@param flags SPAWN_TYPE
+---@param mask MASK
+---@vararg any
+---@return CallbackId
+function set_pre_entity_spawn(cb, flags, mask, ...) end
+---Add a callback for a spawn of specific entity types or mask. Set `mask` to `MASK.ANY` to ignore that.
+---This is run right after the entity is spawned but before and particular properties are changed, e.g. owner or velocity.
+---The callback signature is nil post_entity_spawn(Entity ent, SPAWN_TYPE spawn_flags)
+---@param cb fun(ent: Entity, spawn_flags: SPAWN_TYPE): nil
+---@param flags SPAWN_TYPE
+---@param mask MASK
+---@vararg any
+---@return CallbackId
+function set_post_entity_spawn(cb, flags, mask, ...) end
+---Spawn a Shopkeeper in the coordinates and make the room their shop. Returns the Shopkeeper uid. Also see [spawn_roomowner](https://spelunky-fyi.github.io/overlunky/#spawn_roomowner).
+---@param x number
+---@param y number
+---@param layer LAYER
+---@param room_template ROOM_TEMPLATE
+---@return integer
+function spawn_shopkeeper(x, y, layer, room_template) end
+---Spawn a RoomOwner (or a few other like [CavemanShopkeeper](https://spelunky-fyi.github.io/overlunky/#CavemanShopkeeper)) in the coordinates and make them own the room, optionally changing the room template. Returns the RoomOwner uid.
+---@param owner_type ENT_TYPE
+---@param x number
+---@param y number
+---@param layer LAYER
+---@param room_template ROOM_TEMPLATE
+---@return integer
+function spawn_roomowner(owner_type, x, y, layer, room_template) end
+---Spawn an entity of `entity_type` attached to some other entity `over_uid`, in offset `x`, `y`
+---@param entity_type ENT_TYPE
+---@param over_uid integer
+---@param x number
+---@param y number
+---@return integer
+function spawn_entity_over(entity_type, over_uid, x, y) end
+---Short for [spawn_entity_over](https://spelunky-fyi.github.io/overlunky/#spawn_entity_over)
+---@param entity_type ENT_TYPE
+---@param over_uid integer
+---@param x number
+---@param y number
+---@return integer
+function spawn_over(entity_type, over_uid, x, y) end
+---Spawn a companion (hired hand, player character, eggplant child)
+---@param companion_type ENT_TYPE
+---@param x number
+---@param y number
+---@param layer LAYER
+---@return integer
+function spawn_companion(companion_type, x, y, layer) end
+---Add an integer option that the user can change in the UI. Read with `options.name`, `value` is the default. Keep in mind these are just soft
+---limits, you can override them in the UI with double click.
+---@param name string
+---@param desc string
+---@param long_desc string
+---@param value integer
+---@param min integer
+---@param max integer
+---@return nil
+function register_option_int(name, desc, long_desc, value, min, max) end
+---Add a float option that the user can change in the UI. Read with `options.name`, `value` is the default. Keep in mind these are just soft
+---limits, you can override them in the UI with double click.
+---@param name string
+---@param desc string
+---@param long_desc string
+---@param value number
+---@param min number
+---@param max number
+---@return nil
+function register_option_float(name, desc, long_desc, value, min, max) end
+---Add a boolean option that the user can change in the UI. Read with `options.name`, `value` is the default.
+---@param name string
+---@param desc string
+---@param long_desc string
+---@param value boolean
+---@return nil
+function register_option_bool(name, desc, long_desc, value) end
+---Add a string option that the user can change in the UI. Read with `options.name`, `value` is the default.
+---@param name string
+---@param desc string
+---@param long_desc string
+---@param value string
+---@return nil
+function register_option_string(name, desc, long_desc, value) end
+---Add a combobox option that the user can change in the UI. Read the int index of the selection with `options.name`. Separate `opts` with `\0`,
+---with a double `\0\0` at the end. `value` is the default index 1..n.
+---@param name string
+---@param desc string
+---@param long_desc string
+---@param opts string
+---@param value integer
+---@return nil
+function register_option_combo(name, desc, long_desc, opts, value) end
+---Add a button that the user can click in the UI. Sets the timestamp of last click on value and runs the callback function.
+---@param name string
+---@param desc string
+---@param long_desc string
+---@param on_click function
+---@return nil
+function register_option_button(name, desc, long_desc, on_click) end
+---Add custom options using the window drawing functions. Everything drawn in the callback will be rendered in the options window and the return value saved to `options[name]` or overwriting the whole `options` table if using and empty name.
+---`value` is the default value, and pretty important because anything defined in the callback function will only be defined after the options are rendered. See the example for details.
+---The callback signature is optional<any> on_render(GuiDrawContext draw_ctx)
+---@param name string
+---@param value any
+---@param on_render fun(draw_ctx: GuiDrawContext): any?
+---@return nil
+function register_option_callback(name, value, on_render) end
+---Removes an option by name. To make complicated conditionally visible options you should probably just use register_option_callback though.
+---@param name string
+---@return nil
+function unregister_option(name) end
 
 --## Types
 do
-
----@class Players
 
 ---@class SaveContext
     ---@field save fun(self, data: string): boolean
@@ -2308,6 +2302,7 @@ do
     ---@field online_players OnlinePlayer[] @size: 4
     ---@field local_player OnlinePlayer
     ---@field lobby OnlineLobby
+    ---@field is_active fun(self): boolean
 
 ---@class OnlinePlayer
     ---@field game_mode GAME_MODE
@@ -2339,6 +2334,8 @@ do
     ---@field save fun(self): nil @Save over a previously allocated SaveState
     ---@field clear fun(self): nil @Delete the SaveState and free the memory. The SaveState can't be used after this.
     ---@field get_state fun(self): StateMemory @Access the StateMemory inside a SaveState
+    ---@field get_frame fun(self): integer @Get the current frame from the SaveState, equivelent to the [get_frame](#Get_frame) global function that returns the frame from the "loaded in state"
+    ---@field get_prng fun(self): PRNG @Access the PRNG inside a SaveState
 
 ---@class BackgroundMusic
     ---@field game_startup BackgroundSound
@@ -2491,7 +2488,7 @@ function PRNG:random(min, max) end
 
 ---@class EntityDB
     ---@field id ENT_TYPE
-    ---@field search_flags integer @MASK
+    ---@field search_flags MASK @MASK
     ---@field width number
     ---@field height number
     ---@field draw_depth integer
@@ -2528,39 +2525,6 @@ function PRNG:random(min, max) end
     ---@field animations table<integer, Animation>
     ---@field default_special_offsetx number
     ---@field default_special_offsety number
-
----@class RenderInfo
-    ---@field x number
-    ---@field y number
-    ---@field offset_x number
-    ---@field offset_y number
-    ---@field shader WORLD_SHADER
-    ---@field source Quad
-    ---@field destination Quad
-    ---@field tilew number
-    ---@field tileh number
-    ---@field facing_left boolean
-    ---@field angle number
-    ---@field animation_frame integer
-    ---@field render_inactive boolean
-    ---@field brightness number
-    ---@field texture_num integer
-    ---@field get_entity fun(self): Entity
-    ---@field set_normal_map_texture fun(self, texture_id: TEXTURE): boolean @Sets second_texture to the texture specified, then sets third_texture to SHINE_0 and texture_num to 3. You still have to change shader to 30 to render with normal map (same as COG normal maps)
-    ---@field get_second_texture fun(self): TEXTURE?
-    ---@field get_third_texture fun(self): TEXTURE?
-    ---@field set_second_texture fun(self, texture_id: TEXTURE): boolean
-    ---@field set_third_texture fun(self, texture_id: TEXTURE): boolean
-    ---@field set_texture_num fun(self, num: integer): boolean @Set the number of textures that may be used, need to have them set before for it to work
-    ---@field set_pre_virtual fun(self, entry: RENDER_INFO_OVERRIDE, fun: function): CallbackId @Hooks before the virtual function at index `entry`.
-    ---@field set_post_virtual fun(self, entry: RENDER_INFO_OVERRIDE, fun: function): CallbackId @Hooks after the virtual function at index `entry`.
-    ---@field clear_virtual fun(self, callback_id: CallbackId): nil @Clears the hook given by `callback_id`, alternatively use `clear_callback()` inside the hook.
-    ---@field set_pre_dtor fun(self, fun: fun(self: RenderInfo): nil): CallbackId @Hooks before the virtual function.<br/>The callback signature is `nil dtor(RenderInfo self)`
-    ---@field set_post_dtor fun(self, fun: fun(self: RenderInfo): nil): CallbackId @Hooks after the virtual function.<br/>The callback signature is `nil dtor(RenderInfo self)`
-    ---@field set_pre_draw fun(self, fun: fun(self: RenderInfo): boolean): CallbackId @Hooks before the virtual function.<br/>The callback signature is `bool draw(RenderInfo self)`<br/>Virtual function docs:<br/>Called when the entity enters the camera view, using its hitbox with an extra threshold. Handles low-level graphics tasks related to the GPU
-    ---@field set_post_draw fun(self, fun: fun(self: RenderInfo): boolean): CallbackId @Hooks after the virtual function.<br/>The callback signature is `nil draw(RenderInfo self)`<br/>Virtual function docs:<br/>Called when the entity enters the camera view, using its hitbox with an extra threshold. Handles low-level graphics tasks related to the GPU
-    ---@field set_pre_render fun(self, fun: fun(self: RenderInfo, offset: Vec2, vanilla_render_context: VanillaRenderContext): boolean): CallbackId @Hooks before the virtual function.<br/>The callback signature is `bool render(RenderInfo self, Vec2 offset, VanillaRenderContext vanilla_render_context)`<br/>Virtual function docs:<br/>Offset used in CO to draw the fake image of the entity on the other side of a level
-    ---@field set_post_render fun(self, fun: fun(self: RenderInfo, offset: Vec2, vanilla_render_context: VanillaRenderContext): boolean): CallbackId @Hooks after the virtual function.<br/>The callback signature is `nil render(RenderInfo self, Vec2 offset, VanillaRenderContext vanilla_render_context)`<br/>Virtual function docs:<br/>Offset used in CO to draw the fake image of the entity on the other side of a level
 
 ---@class Entity
     ---@field type EntityDB @Type of the entity, contains special properties etc. If you want to edit them just for this entity look at the EntityDB
@@ -2704,7 +2668,7 @@ function Entity:overlaps_with(other) end
 ---destroy_corpse and responsible are the standard parameters for the kill function
 ---@param destroy_corpse boolean
 ---@param responsible Entity
----@param mask integer?
+---@param mask MASK?
 ---@param ent_types ENT_TYPE[]
 ---@param rec_mode RECURSIVE_MODE
 ---@return nil
@@ -2716,7 +2680,7 @@ function Entity:kill_recursive(destroy_corpse, responsible, mask, ent_types, rec
 function Entity:kill_recursive(destroy_corpse, responsible) end
 ---Destroy entity along with all entities attached to it. Be aware that for example destroying push block with this function will also destroy anything on top of it, any items, players, monsters etc.
 ---To avoid that, you can inclusively or exclusively limit certain MASK and ENT_TYPE. Note: the function will first check the mask, if the entity doesn't match, it will look in the provided ENT_TYPE's
----@param mask integer?
+---@param mask MASK?
 ---@param ent_types ENT_TYPE[]
 ---@param rec_mode RECURSIVE_MODE
 ---@return nil
@@ -5670,6 +5634,39 @@ function VanillaRenderContext:draw_world_poly_filled(points, color) end
     ---@field get_font fun(self): TEXTURE
     ---@field set_font fun(self, id: TEXTURE): boolean
 
+---@class RenderInfo
+    ---@field x number
+    ---@field y number
+    ---@field offset_x number
+    ---@field offset_y number
+    ---@field shader WORLD_SHADER
+    ---@field source Quad
+    ---@field destination Quad
+    ---@field tilew number
+    ---@field tileh number
+    ---@field facing_left boolean
+    ---@field angle number
+    ---@field animation_frame integer
+    ---@field render_inactive boolean
+    ---@field brightness number
+    ---@field texture_num integer
+    ---@field get_entity fun(self): Entity
+    ---@field set_normal_map_texture fun(self, texture_id: TEXTURE): boolean @Sets second_texture to the texture specified, then sets third_texture to SHINE_0 and texture_num to 3. You still have to change shader to 30 to render with normal map (same as COG normal maps)
+    ---@field get_second_texture fun(self): TEXTURE?
+    ---@field get_third_texture fun(self): TEXTURE?
+    ---@field set_second_texture fun(self, texture_id: TEXTURE): boolean
+    ---@field set_third_texture fun(self, texture_id: TEXTURE): boolean
+    ---@field set_texture_num fun(self, num: integer): boolean @Set the number of textures that may be used, need to have them set before for it to work
+    ---@field set_pre_virtual fun(self, entry: RENDER_INFO_OVERRIDE, fun: function): CallbackId @Hooks before the virtual function at index `entry`.
+    ---@field set_post_virtual fun(self, entry: RENDER_INFO_OVERRIDE, fun: function): CallbackId @Hooks after the virtual function at index `entry`.
+    ---@field clear_virtual fun(self, callback_id: CallbackId): nil @Clears the hook given by `callback_id`, alternatively use `clear_callback()` inside the hook.
+    ---@field set_pre_dtor fun(self, fun: fun(self: RenderInfo): nil): CallbackId @Hooks before the virtual function.<br/>The callback signature is `nil dtor(RenderInfo self)`
+    ---@field set_post_dtor fun(self, fun: fun(self: RenderInfo): nil): CallbackId @Hooks after the virtual function.<br/>The callback signature is `nil dtor(RenderInfo self)`
+    ---@field set_pre_draw fun(self, fun: fun(self: RenderInfo): boolean): CallbackId @Hooks before the virtual function.<br/>The callback signature is `bool draw(RenderInfo self)`<br/>Virtual function docs:<br/>Called when the entity enters the camera view, using its hitbox with an extra threshold. Handles low-level graphics tasks related to the GPU
+    ---@field set_post_draw fun(self, fun: fun(self: RenderInfo): boolean): CallbackId @Hooks after the virtual function.<br/>The callback signature is `nil draw(RenderInfo self)`<br/>Virtual function docs:<br/>Called when the entity enters the camera view, using its hitbox with an extra threshold. Handles low-level graphics tasks related to the GPU
+    ---@field set_pre_render fun(self, fun: fun(self: RenderInfo, offset: Vec2, vanilla_render_context: VanillaRenderContext): boolean): CallbackId @Hooks before the virtual function.<br/>The callback signature is `bool render(RenderInfo self, Vec2 offset, VanillaRenderContext vanilla_render_context)`<br/>Virtual function docs:<br/>Offset used in CO to draw the fake image of the entity on the other side of a level
+    ---@field set_post_render fun(self, fun: fun(self: RenderInfo, offset: Vec2, vanilla_render_context: VanillaRenderContext): boolean): CallbackId @Hooks after the virtual function.<br/>The callback signature is `nil render(RenderInfo self, Vec2 offset, VanillaRenderContext vanilla_render_context)`<br/>Virtual function docs:<br/>Offset used in CO to draw the fake image of the entity on the other side of a level
+
 ---@class HudInventory
     ---@field enabled boolean
     ---@field health integer
@@ -6777,6 +6774,12 @@ function LogicMagmamanSpawn:remove_spawn(ms) end
 end
 --## Static class functions
 
+SaveState = nil
+---Get the pre-allocated by the game save slot 1-4
+---@param save_slot integer
+---@return SaveState
+function SaveState:get(save_slot) end
+
 Color = nil
 ---@return Color
 function Color:white() end
@@ -6812,8 +6815,6 @@ function Color:fuchsia() end
 function Color:purple() end
 
 --## Constructors
-
-SaveState = nil
 ---Create a new temporary SaveState/clone of the main level state. Unlike save_state slots that are preallocated by the game anyway, these will use 32MiB a pop and aren't freed automatically, so make sure to clear them or reuse the same one to save memory. The garbage collector will eventually clear the SaveStates you don't have a handle to any more though.
 ---@return SaveState
 function SaveState:new() end
